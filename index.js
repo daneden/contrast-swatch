@@ -1,10 +1,11 @@
-const Color = require('color')
-const { createElement: h } = require('react')
-const { renderToStaticMarkup } = require('react-dom/server')
+const Color = require("color")
+const { createElement: h } = require("react")
+const { renderToStaticMarkup } = require("react-dom/server")
+const rgbHex = require("rgb-hex")
 
-const homepage = 'https://github.com/jxnblk/contrast-swatch'
+const homepage = "https://github.com/jxnblk/contrast-swatch"
 
-const parseURL = (req) => {
+const parseURL = req => {
   const { foreground, background, ...query } = req.query
 
   if (!foreground || !background) return null
@@ -18,8 +19,13 @@ const parseURL = (req) => {
 
 const HEX = /^[A-Fa-f0-9]{3,6}$/
 
-const getColor = (raw) => {
-  if (HEX.test(raw)) raw = '#' + raw
+const getColor = raw => {
+  if (raw.indexOf("rgb") > -1) {
+    raw = rgbHex(raw)
+  }
+
+  if (HEX.test(raw)) raw = "#" + raw
+
   try {
     return Color(raw)
   } catch (e) {
@@ -28,13 +34,13 @@ const getColor = (raw) => {
 }
 
 const getLabel = contrast => {
-  if (contrast >= 7) return 'AAA'
-  if (contrast >= 4.5) return 'AA'
-  if (contrast >= 3) return 'lg'
-  return 'Fail'
+  if (contrast >= 7) return "AAA"
+  if (contrast >= 4.5) return "AA"
+  if (contrast >= 3) return "lg"
+  return "Fail"
 }
 
-const parseColors = (data) => {
+const parseColors = data => {
   const foreground = getColor(data.foreground)
   const background = getColor(data.background)
   const contrast = foreground.contrast(background)
@@ -64,53 +70,60 @@ const svg = req => {
   if (!data) return null
   const colors = parseColors(data)
 
-  const opts = Object.assign({
-    width: 128,
-    height: 128,
-    font: 'system-ui,sans-serif',
-    fontSize: 1,
-    fontWeight: 700,
-    baseline: 0,
-    label: false,
-    radius: 0,
-  }, data.query)
+  const opts = Object.assign(
+    {
+      width: 128,
+      height: 128,
+      font: "system-ui,sans-serif",
+      fontSize: 1,
+      fontWeight: 700,
+      baseline: 0,
+      label: false,
+      radius: 0,
+    },
+    data.query
+  )
 
   const width = Number(opts.size || opts.width)
   const height = Number(opts.size || opts.height)
   const xwidth = 32 * (width / height)
   const fontSize = Number(opts.fontSize) * 8
 
-  let text = [ round(colors.contrast) ]
+  let text = [round(colors.contrast)]
   if (Boolean(opts.label)) {
     text.push(colors.label)
   }
   if (opts.text) text = [opts.text]
 
-  const el = h('svg', {
-    xmlns: 'http://www.w3.org/2000/svg',
-    width,
-    height,
-    viewBox: `0 0 ${xwidth} 32`,
-    fill: colors.hex.foreground,
-    style: {
-      fontFamily: opts.font,
-      fontWeight: opts.fontWeight,
-      fontSize,
+  const el = h(
+    "svg",
+    {
+      xmlns: "http://www.w3.org/2000/svg",
+      width,
+      height,
+      viewBox: `0 0 ${xwidth} 32`,
+      fill: colors.hex.foreground,
+      style: {
+        fontFamily: opts.font,
+        fontWeight: opts.fontWeight,
+        fontSize,
+      },
     },
-  },
-    h('rect', {
+    h("rect", {
       width: xwidth,
       height: 32,
       fill: colors.hex.background,
       rx: opts.radius,
     }),
-    h('text', {
-      textAnchor: 'middle',
-      x: xwidth / 2,
-      y: 16 + Number(opts.baseline),
-      dominantBaseline: 'middle',
-    },
-      text.join(' ')
+    h(
+      "text",
+      {
+        textAnchor: "middle",
+        x: xwidth / 2,
+        y: 16 + Number(opts.baseline),
+        dominantBaseline: "middle",
+      },
+      text.join(" ")
     )
   )
 
@@ -129,11 +142,11 @@ module.exports = async (req, res) => {
   if (!data) return
 
   switch (data.query.type) {
-    case 'json':
+    case "json":
       return res.send(data)
   }
 
-  res.setHeader('Content-Type', 'image/svg+xml;charset=utf-8')
-  res.setHeader('Cache-Control', 'public, max-age=86400')
+  res.setHeader("Content-Type", "image/svg+xml;charset=utf-8")
+  res.setHeader("Cache-Control", "public, max-age=86400")
   res.send(data.svg)
 }

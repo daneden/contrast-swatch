@@ -9,6 +9,7 @@
   "dependencies": {
     "color": "^3.1.2",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "rgb-hex": "^3.0.0"
   }
 }
