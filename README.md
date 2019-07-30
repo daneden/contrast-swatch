@@ -1,3 +1,4 @@
+> Adapted from [jxnblk/contrast-swatch](https://github.com/jxnblk/contrast-swatch)
 
 [![][hero]][hero]
 
