@@ -37,6 +37,18 @@ The URL accepts a foreground and background color.
 ![color contrast indicator](https://contrast-swatch.daneden.now.sh/fff/07c)
 ```
 
+### rgb
+
+Compare two `rgb` values, or an `rgb` and a hex value:
+
+```
+https://contrast-swatch.daneden.now.sh/rgb(255,255,255)/40f?width=256&height=96&fontSize=1.25
+```
+
+[![][rgb]][rgb]
+
+[rgb]: https://contrast-swatch.daneden.now.sh/rgb(255,255,255)/40f?width=256&height=96&fontSize=1.25
+
 ## React
 
 You can wrap the image in a React component (or any templating engine) for generating documentation.
@@ -115,18 +127,6 @@ https://contrast-swatch.daneden.now.sh/fff/40f?width=256&height=96&fontSize=1.25
 
 [rounded]: https://contrast-swatch.daneden.now.sh/cff/40f?radius=8
 [circle]: https://contrast-swatch.daneden.now.sh/cff/40f?radius=48
-
-**rgb**
-
-Compare two `rgb` values, or an `rgb` and a hex value:
-
-```
-https://contrast-swatch.daneden.now.sh/rgb(255,255,255)/40f?width=256&height=96&fontSize=1.25
-```
-
-[![][rgb]][rgb]
-
-[rgb]: https://contrast-swatch.daneden.now.sh/rgb(255,255,255)/40f?width=256&height=96&fontSize=1.25
 
 
 ## Options
